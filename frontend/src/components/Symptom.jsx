@@ -8,8 +8,8 @@ const SearchComponent = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/search/', { symptom });
-
+      const response = await axios.post('http://127.0.0.1:8000/search/', { symptom });
+      console.log('response:' ,response); 
       if (response.status === 200) {
         setResult(response.data);
       } else {
@@ -27,7 +27,7 @@ const SearchComponent = () => {
 
       {result && (
         <div>
-          <h2>{result.disease}</h2>
+          <h2>{result.ms_id}</h2>
           
           {/* Display other fields as needed */}
         </div>

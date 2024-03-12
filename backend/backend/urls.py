@@ -26,5 +26,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('info/', InfoView.as_view(), name = 'something'),
     path('map/', SympDiseaseView.as_view(), name = 'SympDisease'),
-    path('search/', SearchDiseaseAPIView.as_view(), name='search_disease'),
+    path('search/',SearchDiseaseAPIView.as_view(), name='search_disease'),
 ]

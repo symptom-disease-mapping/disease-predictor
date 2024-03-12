@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'demo',
+        'NAME': 'symptoms_checker',
         'USER': 'root',
         'PASSWORD': 'test1234',
         'HOST':'localhost',
