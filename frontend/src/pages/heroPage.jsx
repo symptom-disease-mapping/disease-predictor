@@ -1,4 +1,4 @@
-import FRAMESignInSignUp from "../components/sign-in-up";
+import SignInSignUp from "../components/sign-in-up";
 import Footer from "../components/footer";
 import NavBar from "../components/navbar";
 
@@ -18,7 +18,7 @@ const HeroPage = () => {
           </div>
         </div>
         <div className="self-stretch flex flex-col items-start justify-start max-w-full">
-          <FRAMESignInSignUp />
+          <SignInSignUp />
           <Footer />
         </div>
       </section>

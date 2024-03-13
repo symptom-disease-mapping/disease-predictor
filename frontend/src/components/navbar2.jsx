@@ -1,6 +1,6 @@
 const NavBar2 = () => {
   return (
-    <header className="self-stretch bg-darkslategray-100 flex flex-row items-center justify-between pt-[13px] pb-3 pr-9 pl-3.5 box-border top-[0] z-[99] sticky max-w-full gap-[20px] text-left text-15xl text-lightseagreen font-advent-pro">
+    <header className="self-stretch bg-darkslategray-100 flex flex-row items-center justify-between pt-[11px] pb-1 pr-9 pl-3.5 box-border top-[0] z-[99] sticky max-w-full gap-[20px] text-left text-15xl text-lightseagreen font-advent-pro">
       <div className="h-[66px] w-[1440px] relative bg-darkslategray-100 hidden max-w-full" />
       <div className="flex flex-row items-start justify-start gap-[0px_34px]">
         <img

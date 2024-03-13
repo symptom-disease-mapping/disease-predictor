@@ -1,5 +1,9 @@
 
 import './App.css'
+import HeroPage from './pages/heroPage'
+import InfoPage from './pages/infoPage'
+import InputPage from './pages/inputPage'
+import QuestionPage from './pages/questionPage'
 
 
 
@@ -15,7 +19,6 @@ function App() {
     <>
     {/* <HeroPage/> */}
     {/* <InfoPage/> */}
-  
     {/* <InputPage/> */}
     <QuestionPage/>
     </>
