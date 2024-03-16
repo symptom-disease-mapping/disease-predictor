@@ -13,84 +13,70 @@ from .serializer import SympSearchSerializer
 from .serializer import *
 # Create your views here. 
 
-class InfoView(APIView): 
-    
-    serializer_class = InfoSerializer 
-  
-    def get(self, request): 
-        detail = [ {"age": detail.age,"gender": detail.gender}  
-        for detail in Info.objects.all()] 
-        return Response(detail) 
-  
-    def post(self, request): 
-  
-        serializer = InfoSerializer(data=request.data) 
-        if serializer.is_valid(raise_exception=True): 
-            serializer.save() 
-            return  Response(serializer.data) 
-        
-    def receive_data(request):
-    # Handle incoming data
-      data = request.data
-      return Response({'message': 'Data received successfully'})
-    
-class SympDiseaseView(APIView):
-    serializer_class = MajorSympSerializer
-    def get(self, request): 
-        mapping = [ {"symptom": mapping.symptom,"disease": mapping.disease}  
-        for mapping in SympDisease.objects.all()] 
-        return Response(mapping) 
-    
-    def post(self, request): 
-  
-        serializer = SympDiseaseSerializer(data=request.data) 
-        if serializer.is_valid(raise_exception=True): 
-            serializer.save() 
-            return Response(serializer.data)
- 
-class SearchDiseaseAPIView(APIView):
+class getMajorSymptoms(APIView):
+    def get(self, request, *args, **kwargs):
+        majorSymptoms = MajorSymptoms.objects.all().values('ms_name')
+        # serializer = MajorSympSerializer(majorSymptoms, many=True)
+        list = [item['ms_name'] for item in majorSymptoms]
+        return Response(list, status=status.HTTP_200_OK)
     def post(self, request, *args, **kwargs):
-        symptom = request.data.get('symptom')
-        symptom = symptom+"\r"
-        print(symptom)
+        symptoms = request.data.get('symptoms',[])
+        print(symptoms)
+        preSympList=[]
+        ms_ids=[]
+        for symptom in symptoms:
+         symptom = symptom+"\r"
+         print(symptom)
   
-        try:
+         try:
             ms1 = MajorSymptoms.objects.get(ms_name__exact=symptom)
             print(symptom)
-            #MajorSymptoms.objects.filter(ms_name__icontains="fever").update(ms_name="Fever")
-            
             serializer1 = MajorSympSerializer(ms1)
             ms_id = ms1.ms_id
+            ms_ids.append(ms_id)
+            
             precise = MorePreciseSymptoms.objects.filter(link_1=ms_id)
             serializer2 = MorePreSympSerializer(precise,many=True)
-            #link_1=precise.link_1
-            # return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer2.data, status=status.HTTP_200_OK)
-            #return Response({'ms_id': ms_id}, status=status.HTTP_200_OK)
-        except MorePreciseSymptoms.DoesNotExist:
+            # preSympId = [id['mps_id'] for id in serializer2.data]
+            preSympList.extend(item['mps_name'] for item in serializer2.data)
+        
+         except MorePreciseSymptoms.DoesNotExist:
             return Response({'error': 'Disease not found'}, status=status.HTTP_404_NOT_FOUND)
-    def get(self, request, *args, **kwargs):
-        # Your logic to handle GET requests
-        # For example, fetching all diseases or some initial data
-        diseases = MajorSymptoms.objects.all()
-        serializer = MajorSympSerializer(diseases, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-
-class MajorSymp(APIView):
-     def post(self, request, *args, **kwargs):
-        symptom = request.data.get('symptom')
-
-        try:
-            disease = SympDisease.objects.get(symptom=symptom.strip())
+        request.session['ms_ids']= ms_ids
+        print(ms_ids)
+        return Response(preSympList, status=status.HTTP_200_OK)
+        
+class getPreciseSymptoms(getMajorSymptoms):
+    def post(self, request, *args, **kwargs):
+        preSymps = request.data.get('preSymps',[])
+        result = []
+        mps_ids=[]
+        for preSymp in preSymps:
+         try:
+            mps = MorePreciseSymptoms.objects.get(mps_name=preSymp)
+            serializer = MorePreSympSerializer(mps)
+            mps_id = mps.mps_id
+            mps_ids.append(mps_id)
             
-            serializer = SympSearchSerializer(disease)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except MajorSymptoms.DoesNotExist:
-            return Response({'error': 'Disease not found'}, status=status.HTTP_404_NOT_FOUND)
-     def get(self, request, *args, **kwargs):
-        # Your logic to handle GET requests
-        # For example, fetching all diseases or some initial data
-        diseases = SympDisease.objects.all()
-        serializer = SympSearchSerializer(diseases, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            result.append(serializer.data)
+            
+         except MorePreciseSymptoms.DoesNotExist:
+            result.append({'error': f'Disease not found for {preSymp}'})
+        request.session['mps_id'] = mps_ids
+        return Response(result, status=status.HTTP_200_OK)
+    def get(self, request, *args, **kwargs):
+        diseases = MorePreciseSymptoms.objects.all()
+        serializer = MorePreSympSerializer(diseases, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)   
+class getDiseases(getPreciseSymptoms):
+    
+    def post(self, request, *args, **kwargs):
+        ms_ids = request.session.get('ms_ids')
+        print(ms_ids)
+        diseases=[]
+        for ms_id in ms_ids:
+            disease_obj = Diseases.objects.filter(major_symptom__exact = ms_id)
+            for disease in disease_obj:
+             disease_name = disease.d_name
+             diseases.append(disease_name)
+        return Response(diseases, status=status.HTTP_200_OK)
