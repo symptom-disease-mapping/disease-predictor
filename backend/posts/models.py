@@ -1,21 +1,10 @@
 from django.db import models
-
-#Create your models here.
-class Info(models.Model):
-    age = models.IntegerField
-    gender = models.CharField(max_length = 20)
-
-class SympDisease(models.Model):
-    symptom = models.CharField(max_length = 20, null = True)
-    disease = models.CharField(max_length = 20)
-
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
     class Meta:
         managed = False
         db_table = 'auth_group'
-
 
 class AuthGroupPermissions(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -203,9 +192,23 @@ class MorePreciseSymptomsAdult(models.Model):
         db_table = 'more_precise_symptoms_adult'
 
 
+class PatientInfo(models.Model):
+    pi_id = models.FloatField(primary_key=True)
+    pi_name = models.TextField()
+    pi_age = models.IntegerField()
+    pi_gender = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'patient_info'
+
+
 class PostsInfo(models.Model):
     id = models.BigAutoField(primary_key=True)
     gender = models.CharField(max_length=20)
+    username = models.CharField(max_length=20)
+    age = models.IntegerField()
+    disease = models.TextField()
 
     class Meta:
         managed = False
@@ -220,3 +223,17 @@ class PostsSympdisease(models.Model):
     class Meta:
         managed = False
         db_table = 'posts_sympdisease'
+
+
+class VitalInfo(models.Model):
+    
+    vi_bp = models.FloatField()
+    vi_bsl = models.FloatField()
+    vi_weight = models.FloatField()
+    vi_hieght = models.FloatField()
+    aadhar = models.OneToOneField(PatientInfo, models.DO_NOTHING, db_column='aadhar')
+    vi_temp = models.CharField(max_length=45)
+    vi_id = models.AutoField(primary_key = True)
+    class Meta:
+        managed = True
+        db_table = 'vital_info'

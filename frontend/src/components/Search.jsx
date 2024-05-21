@@ -6,7 +6,7 @@ const Search2 = () => {
   const [options, setOptions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,10 +37,10 @@ const Search2 = () => {
     }
   };
   
-  const handleNext = () =>{
-    //majorDisease = {options};
-    navigate("/Search2", { state: {majorDisease: selectedOptions}});
-  };
+  // const handleNext = () =>{
+  //   //majorDisease = {options};
+  //   navigate("/Question", { state: {majorDisease: selectedOptions}});
+  // };
   return (
     
     <div className="absolute h-full top-[0px] bottom-[0px] left-[30%] w-[398.6px]">
@@ -71,14 +71,19 @@ const Search2 = () => {
           ))}
         </div>
       )}
-      <button
+      {/* <button
         onClick={handleNext}
         className="absolute top-[60%] text-black h-[50px] top-[0px] bottom-[0px] left-[500px] w-[65.9px] bg-darkgray"
       > Next
-      </button>
+      </button> */}
+     <Link to = "/questionpage" state ={{majorDisease: selectedOptions}}
+        className="absolute top-[60%]   bottom-[0px]   bg-darkgray border-none   left-[150%] w-[137px] h-[59.6px] bg-darkslategray-100 hover:bg-dimgray text-white text-5xl font-semibold font-nunito-sans rounded-xl flex items-center justify-center shadow-lg  cursor-pointer [border:none] p-0 bg-[transparent] "
+      > Next
+      </Link>
       {console.log(selectedOptions)}
     </div>
   );
 };
 
 export default Search2;
+

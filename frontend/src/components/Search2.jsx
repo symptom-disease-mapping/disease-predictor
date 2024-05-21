@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {Link, useNavigate, BrowserRouter as Router} from 'react-router-dom';
 import { useLocation } from "react-router-dom";
-const DropdownComponent = () => {
+
+const DropdownComponent = ({symptoms}) => {
   const [options, setOptions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
-  const location = useLocation();
-  const symptoms = location.state.majorDisease;
-  console.log(symptoms);
-
+  
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,7 +37,16 @@ const DropdownComponent = () => {
       setSelectedValue('');
     }
   };
-  
+  const handleNext = async () => {
+    try {
+      const preSymps = selectedOptions;
+      await axios.post('http://127.0.0.1:8000/getPreSymptoms/',{preSymps});
+      
+    } catch (error) { 
+      console.error('Error fetching data:', error);
+    }
+    
+  };
   
   return (
     
@@ -70,11 +78,12 @@ const DropdownComponent = () => {
           ))}
         </div>
       )}
-      {/* <button
-        onClick={handleNext}
+      <Link to="/reportpage"  state ={{preSymps: selectedOptions}}
+        //  onClick={handleNext}
         className="absolute top-[60%] text-black h-[50px] top-[0px] bottom-[0px] left-[500px] w-[65.9px] bg-darkgray"
       > Next
-      </button> */}
+      </Link>
+      {console.log(selectedOptions)}
     </div>
   );
 };
